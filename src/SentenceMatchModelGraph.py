@@ -2,12 +2,19 @@ import tensorflow as tf
 import layer_utils
 import match_utils
 
+def is_predicted_correctly(logits, truth, patterns):
+    """
+    Used in place of the in_top_k for testing correctness during validation Instead of simpling checking whether the
+    label (entailment/contradiction) is correct Try to get a prediction against all possible patterns, and only gives
+    1 if out of all the patterns, the correct pattern gave the highest probability
+    """
+    pass
 
 class SentenceMatchModelGraph(object):
-    def __init__(self, num_classes, word_vocab=None, char_vocab=None, is_training=True, options=None, global_step=None):
+    def __init__(self, num_classes, word_vocab=None, char_vocab=None, patterns=None, is_training=True, options=None, global_step=None):
         self.options = options
         self.create_placeholders()
-        self.create_model_graph(num_classes, word_vocab, char_vocab, is_training, global_step=global_step)
+        self.create_model_graph(num_classes, word_vocab, char_vocab, patterns, is_training, global_step=global_step)
 
     def create_placeholders(self):
         self.question_lengths = tf.placeholder(tf.int32, [None])
@@ -41,7 +48,7 @@ class SentenceMatchModelGraph(object):
 
         return feed_dict
 
-    def create_model_graph(self, num_classes, word_vocab=None, char_vocab=None, is_training=True, global_step=None):
+    def create_model_graph(self, num_classes, word_vocab=None, char_vocab=None, patterns=None, is_training=True, global_step=None):
         options = self.options
         # ======word representation layer======
         in_question_repres = []

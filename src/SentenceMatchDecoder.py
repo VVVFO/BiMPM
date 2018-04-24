@@ -16,6 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('--in_path', type=str, required=True, help='the path to the test file.')
     parser.add_argument('--out_path', type=str, required=True, help='The path to the output file.')
     parser.add_argument('--word_vec_path', type=str, help='word embedding file for the input file.')
+    parser.add_argument('--patterns_path', type=str, help='file containing all the query patterns')
 
     args, unparsed = parser.parse_known_args()
 
@@ -32,6 +33,13 @@ if __name__ == '__main__':
     print('word_vocab: {}'.format(word_vocab.word_vecs.shape))
     print('label_vocab: {}'.format(label_vocab.word_vecs.shape))
     num_classes = label_vocab.size()
+
+    # load patterns
+    print('Loading patterns')
+    patterns = []
+    with open(args.patterns_path, "rb") as patterns_file:
+        for line in patterns_file:
+            patterns.append(line.strip())
 
     if options.with_char:
         char_vocab = Vocab(args.model_prefix + ".char_vocab", fileformat='txt2')
