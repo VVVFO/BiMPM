@@ -10,7 +10,6 @@ import SentenceMatchTrainer
 from SentenceMatchModelGraph import SentenceMatchModelGraph
 from SentenceMatchDataStream import SentenceMatchDataStream
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_prefix', type=str, required=True, help='Prefix to the models.')
@@ -19,13 +18,12 @@ if __name__ == '__main__':
     parser.add_argument('--word_vec_path', type=str, help='word embedding file for the input file.')
 
     args, unparsed = parser.parse_known_args()
-    
+
     # load the configuration file
     print('Loading configurations.')
     options = namespace_utils.load_namespace(args.model_prefix + ".config.json")
 
     if args.word_vec_path is None: args.word_vec_path = options.word_vec_path
-
 
     # load vocabs
     print('Loading vocabs.')
@@ -38,11 +36,11 @@ if __name__ == '__main__':
     if options.with_char:
         char_vocab = Vocab(args.model_prefix + ".char_vocab", fileformat='txt2')
         print('char_vocab: {}'.format(char_vocab.word_vecs.shape))
-    
+
     print('Build SentenceMatchDataStream ... ')
     testDataStream = SentenceMatchDataStream(args.in_path, word_vocab=word_vocab, char_vocab=char_vocab,
-                                            label_vocab=label_vocab,
-                                            isShuffle=False, isLoop=True, isSort=True, options=options)
+                                             label_vocab=label_vocab,
+                                             isShuffle=False, isLoop=True, isSort=True, options=options)
     print('Number of instances in devDataStream: {}'.format(testDataStream.get_num_instance()))
     print('Number of batches in devDataStream: {}'.format(testDataStream.get_num_batch()))
     sys.stdout.flush()
@@ -72,5 +70,3 @@ if __name__ == '__main__':
         acc = SentenceMatchTrainer.evaluation(sess, valid_graph, testDataStream, outpath=args.out_path,
                                               label_vocab=label_vocab)
         print("Accuracy for test set is %.2f" % acc)
-
-
